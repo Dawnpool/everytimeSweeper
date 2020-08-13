@@ -12,16 +12,17 @@ driver = webdriver.Chrome('./chromedriver.exe', chrome_options=op)
 """
 
 driver = webdriver.Chrome('./chromedriver.exe')
+driver.implicitly_wait(3)
 
 
-def login(id, pw):
+def login(userid, pw):
     driver.get("https://everytime.kr")
     driver.find_element_by_class_name('login').click()
-    userid = driver.find_element_by_name('userid')
-    password = driver.find_element_by_name('password')
-    userid.send_keys(id)
-    password.send_keys(pw)
-    userid.submit()
+    userid_entry = driver.find_element_by_name('userid')
+    password_entry = driver.find_element_by_name('password')
+    userid_entry.send_keys(userid)
+    password_entry.send_keys(pw)
+    userid_entry.submit()
     time.sleep(1)
     try:
         alert = driver.switch_to_alert()
@@ -34,7 +35,6 @@ def login(id, pw):
 def get_posts(posts):
     driver.get("https://everytime.kr/myarticle")
     time.sleep(5)
-    posts = []
     driver.find_element_by_css_selector('#sheet .close').click()
     while True:
         time.sleep(1)
@@ -51,9 +51,23 @@ def get_posts(posts):
             next_button.click()
         except NoSuchElementException:
             break
-    return posts
 
 
-def delete_posts(posts):
-    for post in posts:
-        driver.get("https://everytime.kr" + post)
+def click_delete(delete_button):
+    delete_button.click()
+    alert = driver.switch_to_alert()
+    alert.accept()
+
+
+def delete_posts(posts, except_hot):
+    while posts:
+        driver.get("https://everytime.kr" + posts.pop())
+        delete_button = driver.find_element_by_class_name('del')
+        likes_status = driver.find_element_by_css_selector('[title~="공감"]')
+        likes = int(likes_status.get_attribute('innerText'))
+        if except_hot:
+            if likes < 10:
+                click_delete(delete_button)
+        else:
+            click_delete(delete_button)
+        time.sleep(10)
