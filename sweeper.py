@@ -70,4 +70,4 @@ def delete_posts(posts, except_hot):
                 click_delete(delete_button)
         else:
             click_delete(delete_button)
-        time.sleep(10)
+        time.sleep(1)

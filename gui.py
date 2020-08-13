@@ -8,33 +8,33 @@ import time
 
 root = tk.Tk()
 root.title('Everytime Sweeper')
-root.geometry('350x250')
+root.geometry('400x300')
 root.resizable(False, False)
 posts = []
 comments = []
 
 
 def update_mypost_number(t1):
-    packs = root.pack_slaves()
-    target_pack = packs[1]
-    loading_pack = packs[-1]
-    loading_pack['text'] = '조회 중...'
+    grids = root.grid_slaves()
+    target_grid = grids[-2]
+    loading_grid = grids[0]
+    loading_grid['text'] = '조회 중...'
     while t1.is_alive():
-        target_pack['text'] = '내가 쓴 글 수: ' + str(len(posts))
+        target_grid['text'] = '내가 쓴 글 수: ' + str(len(posts))
         time.sleep(0.1)
-    target_pack['text'] = '내가 쓴 글 수: ' + str(len(posts))
-    loading_pack['text'] = '조회 완료'
+    target_grid['text'] = '내가 쓴 글 수: ' + str(len(posts))
+    loading_grid['text'] = '조회 완료'
 
 
 def update_delete_status(t1, total_posts):
-    packs = root.pack_slaves()
-    status_pack = packs[-1]
-    status_pack['text'] = '0/{total} 삭제 중'.format(total=total_posts)
+    grids = root.grid_slaves()
+    status_grid = grids[0]
+    status_grid['text'] = '0/{total} 삭제 중'.format(total=total_posts)
     while t1.is_alive():
-        status_pack['text'] = '{now}/{total} 삭제 중'.format(
+        status_grid['text'] = '{now}/{total} 삭제 중'.format(
             now=total_posts-len(posts), total=total_posts)
         time.sleep(0.1)
-    status_pack['text'] = '{now}/{total} 삭제 완료'.format(
+    status_grid['text'] = '{now}/{total} 삭제 완료'.format(
         now=total_posts-len(posts), total=total_posts)
 
 
@@ -55,10 +55,10 @@ def delete_mypost(except_hot):
 
 
 def switch_page():
-    packs = root.pack_slaves()
-    packs = packs[1:]
-    for pack in packs:
-        pack.destroy()
+    grids = root.grid_slaves()
+    grids.pop()
+    for grid in grids:
+        grid.destroy()
     mypost_label = tk.Label(root, text="내가 쓴 글 수: ")
     mycomment_label = tk.Label(root, text="댓글 단 글 수: ")
     post_inq_button = tk.Button(root, text="내가 쓴 글 조회", command=update_mypost)
@@ -71,13 +71,13 @@ def switch_page():
         root, text="내가 쓴 글 모두 삭제", command=lambda: delete_mypost(except_hot.get()))
     loading_label = tk.Label(root, text='')
 
-    mypost_label.pack(pady=5)
-    mycomment_label.pack(pady=5)
-    post_inq_button.pack()
-    post_delete_button.pack()
-    comment_inq_button.pack()
-    except_hot_checkbox.pack()
-    loading_label.pack()
+    mypost_label.grid(row=1, column=0)
+    mycomment_label.grid(row=2, column=0)
+    post_inq_button.grid(row=3, column=0)
+    post_delete_button.grid(row=3, column=1)
+    except_hot_checkbox.grid(row=3, column=2)
+    comment_inq_button.grid(row=4, column=0)
+    loading_label.grid(row=5)
 
 
 def attempt_login(userid, password):
@@ -89,22 +89,22 @@ def attempt_login(userid, password):
 
 
 def start_page():
-    title_font = tkFont.Font(size=15)
+    title_font = tkFont.Font(size=10)
     title = tk.Label(root, text="에브리타임 글 청소기", font=title_font)
 
-    login_label = tk.Label(root, text="아이디",)
+    login_label = tk.Label(root, text="아이디:")
     login_entry = tk.Entry(root)
-    password_label = tk.Label(root, text="비밀번호")
+    password_label = tk.Label(root, text="비밀번호:")
     password_entry = tk.Entry(root, show='*')
     login_button = tk.Button(root, text='로그인', command=lambda: attempt_login(
         login_entry.get(), password_entry.get()))
 
-    title.pack(pady=20)
-    login_label.pack()
-    login_entry.pack()
-    password_label.pack(pady=(10, 0))
-    password_entry.pack()
-    login_button.pack(pady=(10, 0))
+    title.grid(row=0, column=1, pady=20)
+    login_label.grid(row=1, column=0)
+    login_entry.grid(row=1, column=1)
+    password_label.grid(row=2, column=0)
+    password_entry.grid(row=2, column=1)
+    login_button.grid(row=3)
 
 
 start_page()
