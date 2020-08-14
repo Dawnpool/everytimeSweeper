@@ -10,7 +10,6 @@ op.add_argument('headless')
 driver = webdriver.Chrome(options=op)
 driver = webdriver.Chrome('./chromedriver.exe', chrome_options=op)
 """
-
 driver = webdriver.Chrome('./chromedriver.exe')
 driver.implicitly_wait(3)
 
@@ -34,8 +33,11 @@ def login(userid, pw):
 
 def get_posts(posts):
     driver.get("https://everytime.kr/myarticle")
-    time.sleep(5)
-    driver.find_element_by_css_selector('#sheet .close').click()
+    time.sleep(3.5)
+    try:
+        driver.find_element_by_css_selector('#sheet .close').click()
+    except NoSuchElementException:
+        pass
     while True:
         time.sleep(1)
         html = driver.page_source
