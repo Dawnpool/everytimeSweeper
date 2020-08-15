@@ -5,6 +5,7 @@ import sweeper as swp
 import threading
 import time
 
+# Initialize
 root = tk.Tk()
 root.title('Everytime Sweeper')
 root.geometry('400x200')
@@ -12,11 +13,13 @@ root.resizable(False, False)
 posts = []
 comments = []
 
+# Font setting
 title_font = tkFont.Font(size=12, weight='bold', family='Ubuntu')
 label_font = tkFont.Font(size=10, family='Ubuntu')
 
 
-def update_mypost_number(t1):
+def update_mypost_status(t1):
+    """Update(rewrite) collection status on screen while collecting."""
     grids = root.grid_slaves()
     target_grid = grids[-2]
     loading_grid = grids[0]
@@ -29,6 +32,7 @@ def update_mypost_number(t1):
 
 
 def update_delete_status(t1, total_posts):
+    """Update(rewrite) deletion status on screen while deleting."""
     grids = root.grid_slaves()
     status_grid = grids[0]
     status_grid['text'] = '0/{total} 삭제 중'.format(total=total_posts)
@@ -41,14 +45,22 @@ def update_delete_status(t1, total_posts):
 
 
 def update_mypost():
+    """
+    Collect my posts.
+    Threading is used for preventing gui from stopping and showing collection status.
+    """
     posts.clear()
     t1 = threading.Thread(target=swp.get_posts, args=(posts,))
-    t2 = threading.Thread(target=update_mypost_number, args=(t1,))
+    t2 = threading.Thread(target=update_mypost_status, args=(t1,))
     t1.start()
     t2.start()
 
 
 def delete_mypost(except_hot):
+    """
+    Delete my collected posts.
+    Threading is used for preventing gui from stopping and showing deletion status.
+    """
     total_posts = len(posts)
     t1 = threading.Thread(target=swp.delete_posts, args=(posts, except_hot))
     t2 = threading.Thread(target=update_delete_status, args=(t1, total_posts))
@@ -56,7 +68,8 @@ def delete_mypost(except_hot):
     t2.start()
 
 
-def switch_page():
+def render_control_screen():
+    """Render control screen which contains main functions."""
     root.unbind('<Return>')
     grids = root.grid_slaves()
     grids.pop()
@@ -88,14 +101,20 @@ def switch_page():
 
 
 def attempt_login(userid, password):
+    """
+    Try login.
+    Render the control screen if login successed,
+    alert error message if login failed.
+    """
     login_status = swp.login(userid, password)
     if login_status:
-        switch_page()
+        render_control_screen()
     else:
         tk.messagebox.showerror('로그인 실패', '아이디와 비밀번호를 확인해주세요')
 
 
-def start_page():
+def render_first_screen():
+    """Render first screen of GUI."""
     title = tk.Label(root, text="에브리타임 청소기", font=title_font)
     login_label = tk.Label(root, text="아이디:", font=label_font)
     login_entry = tk.Entry(root, font=label_font)
@@ -113,5 +132,6 @@ def start_page():
     login_button.grid(row=3, column=1, pady=(10, 0))
 
 
-start_page()
+# Run
+render_first_screen()
 root.mainloop()

@@ -10,11 +10,14 @@ op.add_argument('headless')
 driver = webdriver.Chrome(options=op)
 driver = webdriver.Chrome('./chromedriver.exe', chrome_options=op)
 """
+
+# Get ready for chrome web driver and set time for lenient waiting.
 driver = webdriver.Chrome('./chromedriver.exe')
 driver.implicitly_wait(3)
 
 
 def login(userid, pw):
+    """Try login on browser."""
     driver.get("https://everytime.kr")
     driver.find_element_by_class_name('login').click()
     userid_entry = driver.find_element_by_name('userid')
@@ -32,6 +35,7 @@ def login(userid, pw):
 
 
 def get_posts(posts):
+    """Collect my posts."""
     driver.get("https://everytime.kr/myarticle")
     time.sleep(3.5)
     try:
@@ -56,12 +60,14 @@ def get_posts(posts):
 
 
 def click_delete(delete_button):
+    """Click delete button"""
     delete_button.click()
     alert = driver.switch_to_alert()
     alert.accept()
 
 
 def delete_posts(posts, except_hot):
+    """Delete my posts depending on user's hot posts exception checkbox."""
     while posts:
         driver.get("https://everytime.kr" + posts.pop())
         delete_button = driver.find_element_by_class_name('del')
