@@ -34,9 +34,12 @@ def login(userid, pw):
         return True
 
 
-def get_posts(posts):
+def get_posts(posts, for_comment=False):
     """Collect my posts."""
-    driver.get("https://everytime.kr/myarticle")
+    if for_comment:
+        driver.get("https://everytime.kr/mycommentarticle")
+    else:
+        driver.get("https://everytime.kr/myarticle")
     time.sleep(3.5)
     try:
         driver.find_element_by_css_selector('#sheet .close').click()
@@ -79,3 +82,26 @@ def delete_posts(posts, except_hot):
         else:
             click_delete(delete_button)
         time.sleep(1)
+
+
+def count_comments(posts, comments):
+    for post in posts:
+        driver.get("https://everytime.kr" + post)
+        delete_buttons = driver.find_elements_by_css_selector(
+            ".comments .status .del")
+        comments[0] += len(delete_buttons)
+
+
+def delete_comments(posts, comments):
+    """Delete my comments for each post."""
+    while posts:
+        driver.get("https://everytime.kr" + posts.pop())
+        delete_buttons = driver.find_elements_by_css_selector(
+            ".comments .status .del")
+        for button in delete_buttons:
+            button.click()
+            alert = driver.switch_to_alert()
+            alert.accept()
+            comments[0] -= 1
+            time.sleep(5)
+        time.sleep(10)
