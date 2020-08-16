@@ -103,5 +103,4 @@ def delete_comments(posts, comments):
             alert = driver.switch_to_alert()
             alert.accept()
             comments[0] -= 1
-            time.sleep(5)
-        time.sleep(10)
+            time.sleep(1)

@@ -8,7 +8,7 @@ import time
 # Initialize
 root = tk.Tk()
 root.title('Everytime Sweeper')
-root.geometry('400x200')
+root.geometry('400x210')
 root.resizable(False, False)
 posts = []
 commented_posts = []
@@ -76,7 +76,7 @@ def update_post_delete_status(t1, total_posts):
 
 def update_comment_delete_status(t1, total_comments):
     """Update(rewrite) comment deletion status on screen while deleting."""
-    grids = root.grid_salves()
+    grids = root.grid_slaves()
     status_grid = grids[0]
     status_grid['text'] = '0/{total} 삭제 중'.format(total=total_comments)
     while t1.is_alive():
