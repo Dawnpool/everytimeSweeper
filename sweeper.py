@@ -18,6 +18,7 @@ driver.implicitly_wait(3)
 
 def login(userid, pw):
     """Try login on browser."""
+    driver.maximize_window()
     driver.get("https://everytime.kr")
     driver.find_element_by_class_name('login').click()
     userid_entry = driver.find_element_by_name('userid')
