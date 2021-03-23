@@ -185,7 +185,7 @@ def attempt_login(userid, password):
 
 def render_first_screen():
     """Render first screen of GUI."""
-    title = tk.Label(root, text="에브리타임 청소기", font=title_font)
+    title = tk.Label(root, text="에브리타임 스위퍼", font=title_font)
     login_label = tk.Label(root, text="아이디:", font=label_font)
     login_entry = tk.Entry(root, font=label_font)
     password_label = tk.Label(root, text="비밀번호:", font=label_font)
